@@ -4,6 +4,12 @@ The 5GTANGO SDK traffic generation repository
 ## License
 The tng-sdk-traffic is published under Apache 2.0 license. Please see the LICENSE file for more details.
 
+## CLI
+
+
+## Service API
+tng-sdk-traffic exposes a REST API in order to be used by any external application.
+
 #### Lead Developers
 The following lead developers are responsible for this repository and have admin rights. They can, for example, merge pull requests.
 
