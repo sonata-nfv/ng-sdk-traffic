@@ -70,6 +70,22 @@ def parse_args(input_args=None):
         default=False
     )
     parser.add_argument(
+        "--address",
+        help="Listen address of REST API when in service mode."
+        + "\nDefault: 0.0.0.0",
+        required=False,
+        default="0.0.0.0",
+        dest="service_address"
+    )
+    parser.add_argument(
+        "--port",
+        help="TCP port of REST API when in service mode."
+        + "\nDefault: 5099",
+        required=False,
+        default=5099,
+        dest="service_port"
+    )
+    parser.add_argument(
         "--verbose",
         help="Sets verbosity level to debug",
         dest="verbose",

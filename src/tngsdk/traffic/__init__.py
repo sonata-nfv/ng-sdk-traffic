@@ -49,7 +49,7 @@ def main():
 
     if args.service:
         # Run in service mode
-        rest.serve()
+        rest.serve(args)
     else:
         # Run in CLI mode
         cli.dispatch()

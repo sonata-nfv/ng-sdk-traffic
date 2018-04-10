@@ -26,10 +26,18 @@
 
 import logging
 import os
-from flask import Flask, Blueprint
-from flask_restplus import Resource, Api, Namespace, fields
+from flask import Flask
 
 # LOG = logging.getLogger(os.path.basename(__file__))
 
-def serve():
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return "Hello, World!"
+
+def serve(args):
+    app.run(host=args.service_address,
+            port=args.service_port,
+            debug=args.verbose)
     return

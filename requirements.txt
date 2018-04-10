@@ -2,4 +2,3 @@ setuptools
 pytest
 coloredlogs
 pytest
-flask-restplus
