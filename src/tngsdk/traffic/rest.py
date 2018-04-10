@@ -26,18 +26,62 @@
 
 import logging
 import os
-from flask import Flask
+from flask import Flask, jsonify
 
 # LOG = logging.getLogger(os.path.basename(__file__))
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return "Hello, World!"
+# Generate traffic generation object
+@app.route('/api/trafficgen/v1/trafficObject', methods=['POST'])
+def generate_tgo():
+    # TODO generate the flow
+    return "Generating a traffic generation object"
+
+# Get list of traffic generation objects
+@app.route('/api/trafficgen/v1/trafficObject', methods=['GET'])
+def get_list():
+    # TODO search for a traffic generation object
+    return "This are the traffic generation objects"
+
+# Get traffic generation object
+@app.route('/api/trafficgen/v1/trafficObject/<int:resource_uuid>', methods=['GET'])
+def get_tgo(resource_uuid):
+    # TODO search for a traffic generation object
+    return "This is a traffic generation object with id " + str(resource_uuid)
+
+# Delete traffic generation object
+@app.route('/api/trafficgen/v1/trafficObject/<int:resource_uuid>', methods=['DELETE'])
+def delete_tgo(resource_uuid):
+    # TODO delete a traffic generation object
+    return "Deleting traffic generation object with id " + str(resource_uuid)
+
+# Create traffic flow from existing traffic generation object
+@app.route('/api/trafficgen/v1/flows/<int:resource_uuid>', methods=['POST'])
+def generate_flow(resource_uuid):
+    # TODO create a traffic flow from a traffic generation object
+    return "Creating traffic flow from existing traffic generation object with id " + str(resource_uuid)
+
+# Get traffic flow status 
+@app.route('/api/trafficgen/v1/flows/<int:flow_uuid>', methods=['GET'])
+def get_status(flow_uuid):
+    # TODO get traffic flow status
+    return "Getting traffic flow status from id " + str(flow_uuid)
+
+# Start/Stops existing traffic flow
+@app.route('/api/trafficgen/v1/flows/<int:flow_uuid>', methods=['PUT'])
+def manage_flow(flow_uuid):
+    # TODO start or stop a traffic flow 
+    return "Starting/Stopping traffic flow with id " + str(flow_uuid)
+
+# Removes traffic flow
+@app.route('/api/trafficgen/v1/flows/<int:flow_uuid>', methods=['DELETE'])
+def remove_flow(flow_uuid):
+    # TODO remove a traffic flow 
+    return "Deleting traffic flow with id " + str(flow_uuid)
 
 def serve(args):
     app.run(host=args.service_address,
-            port=args.service_port,
+            port=int(args.service_port),
             debug=args.verbose)
     return
