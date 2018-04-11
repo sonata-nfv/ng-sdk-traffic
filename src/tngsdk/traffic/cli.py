@@ -60,7 +60,22 @@ def parse_args(input_args=None):
         required=False,
         default=False
     )
-
+    parser.add_argument(
+        "--target-address",
+        help="Target address to send the traffic."
+        + "\nDefault: 0.0.0.0",
+        required=False,
+        default="0.0.0.0",
+        dest="target_address"
+    )
+    parser.add_argument(
+        "--target-port",
+        help="Target port to send the traffic."
+        + "\nDefault: 5099",
+        required=False,
+        default=5099,
+        dest="target_port"
+    )
     parser.add_argument(
         "--service",
         help="Run traffic generator in service mode with REST API.",
