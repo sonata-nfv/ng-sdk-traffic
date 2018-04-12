@@ -94,7 +94,7 @@ def save_trafficObject(data):
                     (id, name, creation_date, protocol, description, timeout, bandwidth))
         connection.commit()
 
-        return { "status": 200, "id": cur.lastrowid }
+        return { "status": 200, "uuid": id }
 
     except lite.Error, e:
         LOG.error("Error %s:" % e.args[0])
@@ -129,3 +129,17 @@ def get_trafficObject(resource_uuid):
     except lite.Error, e:
         LOG.error("Error %s:" % e.args[0])
         return { "status": 500, "message": "Unable to get the traffic generation object" }
+
+def delete_trafficObject(resource_uuid):
+    try:
+        tgo = get_trafficObject(resource_uuid)
+
+        cur = connection.cursor()           
+        cur.execute("delete from trafficObjects where uuid=:id", {"id": resource_uuid}) 
+        connection.commit()
+
+        return { "status": tgo['status'], "data": tgo['data'] }
+        
+    except lite.Error, e:
+        LOG.error("Error %s:" % e.args[0])
+        return { "status": 500, "message": "Unable to remove the traffic generation object" }

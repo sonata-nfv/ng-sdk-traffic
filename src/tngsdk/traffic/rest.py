@@ -54,7 +54,7 @@ def generate_tgo():
     else:
         res = traffic.save_trafficObject(body)
         if (res['status'] == 200):
-            response = jsonify({ "resource_uuid": res['id'] })
+            response = jsonify({ "resource_uuid": res['uuid'] })
         else:
             response = jsonify(res['message'])
             response.status_code = res['status']
@@ -82,10 +82,14 @@ def get_tgo(resource_uuid):
 
 
 # Delete traffic generation object
-@app.route('/api/trafficgen/v1/trafficObject/<int:resource_uuid>', methods=['DELETE'])
+@app.route('/api/trafficgen/v1/trafficObject/<resource_uuid>', methods=['DELETE'])
 def delete_tgo(resource_uuid):
-    # TODO delete a traffic generation object
-    return "Deleting traffic generation object with id " + str(resource_uuid)
+    res = traffic.delete_trafficObject(resource_uuid)
+    response = jsonify(res['data'])
+    response.status_code = res['status']
+
+    return response
+
 
 # Create traffic flow from existing traffic generation object
 @app.route('/api/trafficgen/v1/flows/<int:resource_uuid>', methods=['POST'])
