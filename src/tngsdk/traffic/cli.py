@@ -28,18 +28,13 @@ import logging
 import argparse
 import os
 import sys
-import json
+import simplejson as json
 from tngsdk.traffic import traffic
 
 LOG = logging.getLogger(os.path.basename(__file__))
 
 
 def dispatch(args):
-    
-    print args
-
-    # TODO call traffic.py to do selected command
-
     if 'list' in args and args.list:
         res = traffic.list_trafficObjects()['data']
         print json.dumps(res, indent=4)
@@ -48,9 +43,21 @@ def dispatch(args):
         res = traffic.get_trafficObject(args.detail_UUID[0])['data']
         print json.dumps(res, indent=4)
 
-    elif 'remove_UUID' in args:
+    elif 'remove_UUID' in args and args.remove_UUID != None:
         res = traffic.delete_trafficObject(args.remove_UUID[0])['data']
         print json.dumps(res, indent=4)
+
+    elif 'trafficObject' in args and args.trafficObject != None:
+        jsonData = json.loads(args.trafficObject[0])
+        
+        if "name" in jsonData and "protocol" in jsonData \
+        and jsonData['name'] != "" \
+        and (jsonData['protocol'] == "UDP" or jsonData['protocol'] == "TCP"):
+            res = traffic.save_trafficObject(jsonData)
+            print json.dumps(res, indent=4)
+            
+        else: 
+            print "Some of the mandatory attributes are missing or are incorrect. Please try again."
 
     return  
 
@@ -122,47 +129,13 @@ def parse_args(input_args=None):
         required=False, 
         dest="remove_UUID" 
     )
-    # subparsers_traffic = parser_traffic.add_subparsers(help='Commands to operate with traffic generation objects')
-
-
-
-    # parser_remove = subparsers_traffic.add_parser('remove', help='Remove one traffic generation object')
-    # parser_remove.add_argument(
-    #     "--uuid",
-    #     help="UUID of the traffic generation object",
-    #     nargs=1,
-    #     required=True
-    # )
-
-
-    # parser_add = subparsers_traffic.add_parser('add', help='Create one traffic generation object')
-    # parser_add.add_argument(
-    #     "--name",
-    #     help="Name of the traffic generation object",
-    #     nargs=1,
-    #     required=True
-    # )
-    # parser_add.add_argument(
-    #     "--protocol",
-    #     help="Protocol of the traffic generation object",
-    #     nargs=1,
-    #     required=True
-    # )
-    # parser_add.add_argument(
-    #     "--description",
-    #     help="Description of the traffic generation object",
-    #     required=False
-    # )
-    # parser_add.add_argument(
-    #     "--timeout",
-    #     help="Timeout of the traffic generation object",
-    #     required=False
-    # )
-    # parser_add.add_argument(
-    #     "--bandwidth",
-    #     help="Bandwidth of the traffic generation object",
-    #     required=False
-    # )
+    parser_traffic.add_argument(
+        '--add', 
+        help='Create one traffic generation object of the form \'{ "name": "example", "protocol": "UDP/TCP", "description": "", "timeout": [seconds], "bandwidth": [Mbps] }\'. Only name and protocol are mandatory.', 
+        nargs=1,
+        required=False,
+        dest="trafficObject" 
+    )
 
 
     # Flows submenu 
