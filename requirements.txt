@@ -2,3 +2,4 @@ setuptools
 pytest
 coloredlogs
 pytest
+simplejson

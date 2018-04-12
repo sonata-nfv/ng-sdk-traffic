@@ -29,6 +29,8 @@ import argparse
 import os
 import sys
 
+LOG = logging.getLogger(os.path.basename(__file__))
+
 
 def dispatch():
     # TODO call traffic.py to do selected command
@@ -43,13 +45,13 @@ def parse_args(input_args=None):
         """)
 
     parser.add_argument(
-        "--generate-flow",
+        "--generate-object",
         "-g",
-        help="Generate a traffic flow",
-        dest="generate-flow",
+        help="Generate a traffic generation object",
+        dest="generate-trafficobj",
         action="store_true",
         required=False,
-        default=False
+        default={}
     )
     parser.add_argument(
         "--list-flows",

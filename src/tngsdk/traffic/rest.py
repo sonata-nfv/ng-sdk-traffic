@@ -24,19 +24,34 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
-import logging
 import os
-from flask import Flask, jsonify
+import simplejson as json
+from flask import Flask, jsonify, request
+from tngsdk.traffic import traffic
 
-# LOG = logging.getLogger(os.path.basename(__file__))
 
 app = Flask(__name__)
 
 # Generate traffic generation object
 @app.route('/api/trafficgen/v1/trafficObject', methods=['POST'])
 def generate_tgo():
-    # TODO generate the flow
-    return "Generating a traffic generation object"
+    body = json.loads(request.data)
+
+    # Check existance of required data params
+    if "protocol" not in body or "name" not in body:
+        response = jsonify("Missing parameters to create traffic generation object")
+        response.status_code = 422
+
+        return response
+    else:
+        res = traffic.save_trafficObject(body)
+        if (res['status'] == 200):
+            response = jsonify({ "resource_uuid": res['id'] })
+        else:
+            response = jsonify(res['message'])
+            response.status_code = res['status']
+        return response
+
 
 # Get list of traffic generation objects
 @app.route('/api/trafficgen/v1/trafficObject', methods=['GET'])

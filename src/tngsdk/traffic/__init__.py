@@ -24,11 +24,11 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
-import logging
 import coloredlogs
 import os
 
 from tngsdk.traffic import cli, rest
+from tngsdk.traffic import traffic
 
 
 def logging_setup():
@@ -46,6 +46,7 @@ def main():
         coloredlogs.install(level="INFO")
 
     # TODO validate if args combination makes any sense
+    traffic.start_dbconnection()
 
     if args.service:
         # Run in service mode

@@ -80,3 +80,6 @@ gui/node_modules
 
 # ignore user generated tng-sdk-validation event configuration
 /eventcfg.yml
+
+# Database
+*.db
