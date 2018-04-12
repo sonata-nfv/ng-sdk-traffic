@@ -91,4 +91,4 @@ def save_trafficObject(data):
 
     except lite.Error, e:
         LOG.error("Error %s:" % e.args[0])
-        return { "status": 422, "message": "Unable to store the traffic generation object" }
+        return { "status": 500, "message": "Unable to store the traffic generation object" }

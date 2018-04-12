@@ -25,22 +25,30 @@
 # partner consortium (www.5gtango.eu).
 
 import os
+import logging
 import simplejson as json
 from flask import Flask, jsonify, request
 from tngsdk.traffic import traffic
 
+
+LOG = logging.getLogger(os.path.basename(__file__))
 
 app = Flask(__name__)
 
 # Generate traffic generation object
 @app.route('/api/trafficgen/v1/trafficObject', methods=['POST'])
 def generate_tgo():
-    body = json.loads(request.data)
+    try:
+        body = json.loads(request.data)
+    except ValueError:
+        response = jsonify("JSON format error in request parameters")
+        response.status_code = 400
+        return response
 
     # Check existance of required data params
     if "protocol" not in body or "name" not in body:
         response = jsonify("Missing parameters to create traffic generation object")
-        response.status_code = 422
+        response.status_code = 400
 
         return response
     else:
