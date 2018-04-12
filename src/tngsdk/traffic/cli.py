@@ -35,11 +35,25 @@ LOG = logging.getLogger(os.path.basename(__file__))
 
 
 def dispatch(args):
+    
+    print args
+
     # TODO call traffic.py to do selected command
-    if 'list' in args:
+
+    if 'list' in args and args.list:
         res = traffic.list_trafficObjects()['data']
         print json.dumps(res, indent=4)
+
+    elif 'detail_UUID' in args and args.detail_UUID != None:
+        res = traffic.get_trafficObject(args.detail_UUID[0])['data']
+        print json.dumps(res, indent=4)
+
+    elif 'remove_UUID' in args:
+        res = traffic.delete_trafficObject(args.remove_UUID[0])['data']
+        print json.dumps(res, indent=4)
+
     return  
+
 
 def parse_args(input_args=None):
     parser = argparse.ArgumentParser(
@@ -86,18 +100,32 @@ def parse_args(input_args=None):
 
     # Traffic generation object submenu 
     parser_traffic = subparsers.add_parser('traffic-object', help='Traffic generation object commands')
-    
+
+    parser_traffic.add_argument(
+        '--list', 
+        help='List all the traffic generation objects', 
+        required=False, 
+        action="store_true", 
+        dest="list" 
+    )
+    parser_traffic.add_argument(
+        '--detail', 
+        help='Show one traffic generation object details from the introduced UUID', 
+        nargs=1,
+        required=False, 
+        dest="detail_UUID" 
+    )
+    parser_traffic.add_argument(
+        '--remove', 
+        help='Remove one traffic generation object from the introduced UUID', 
+        nargs=1,
+        required=False, 
+        dest="remove_UUID" 
+    )
     # subparsers_traffic = parser_traffic.add_subparsers(help='Commands to operate with traffic generation objects')
 
-    parser_traffic.add_argument('--list', help='List all the traffic generation objects', required=False, action="store_true", dest="list" )
 
-    # parser_detail = subparsers_traffic.add_parser('detail', help='Show one traffic generation object details')
-    # parser_detail.add_argument(
-    #     "--uuid",
-    #     help="UUID of the traffic generation object",
-    #     nargs=1,
-    #     required=True
-    # )
+
     # parser_remove = subparsers_traffic.add_parser('remove', help='Remove one traffic generation object')
     # parser_remove.add_argument(
     #     "--uuid",
