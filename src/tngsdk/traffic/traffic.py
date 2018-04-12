@@ -26,6 +26,7 @@
 
 import os
 import sys
+import uuid
 import logging
 import datetime
 import simplejson as json
@@ -53,6 +54,7 @@ def create_dbtables():
     try:
         cur = connection.cursor()           
         cur.execute('CREATE TABLE IF NOT EXISTS trafficObjects( \
+                    uuid text NOT NULL, \
                     name text NOT NULL, \
                     creation_date text NOT NULL, \
                     protocol text NOT NULL, \
@@ -66,6 +68,7 @@ def create_dbtables():
 
 def save_trafficObject(data):
     creation_date = str(datetime.datetime.now())
+    id = str(uuid.uuid1())
 
     # Required parameters
     name = data['name']
@@ -87,8 +90,8 @@ def save_trafficObject(data):
             
     try:
         cur = connection.cursor()           
-        cur.execute("insert into trafficObjects VALUES('%s', '%s', '%s', '%s', '%s', '%s');" % \
-                    (name, creation_date, protocol, description, timeout, bandwidth))
+        cur.execute("insert into trafficObjects VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s');" % \
+                    (id, name, creation_date, protocol, description, timeout, bandwidth))
         connection.commit()
 
         return { "status": 200, "id": cur.lastrowid }
