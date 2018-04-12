@@ -107,10 +107,25 @@ def list_trafficObjects():
         data = cur.fetchall()
 
         jsonData = json.loads(json.dumps( [dict(x) for x in data] ))
-
+        
         return { "status": 200, "data": jsonData }
 
     except lite.Error, e:
         LOG.error("Error %s:" % e.args[0])
-        return { "status": 500, "message": "Unable to store the traffic generation object" }
+        return { "status": 500, "message": "Unable to get the traffic generation objects" }
     
+def get_trafficObject(resource_uuid):
+    try:
+        cur = connection.cursor()           
+        cur.execute("select * from trafficObjects where uuid=:id", {"id": resource_uuid})
+        data = cur.fetchall()
+
+        if data == []:
+            return { "status": 404, "data": "Traffic generation object does not exist" }
+        else:
+            jsonData = json.loads(json.dumps( [dict(x) for x in data] ))[0]
+            return { "status": 200, "data": jsonData }
+
+    except lite.Error, e:
+        LOG.error("Error %s:" % e.args[0])
+        return { "status": 500, "message": "Unable to get the traffic generation object" }

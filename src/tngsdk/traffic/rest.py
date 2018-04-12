@@ -72,10 +72,14 @@ def get_list():
 
 
 # Get traffic generation object
-@app.route('/api/trafficgen/v1/trafficObject/<int:resource_uuid>', methods=['GET'])
+@app.route('/api/trafficgen/v1/trafficObject/<resource_uuid>', methods=['GET'])
 def get_tgo(resource_uuid):
-    # TODO search for a traffic generation object
-    return "This is a traffic generation object with id " + str(resource_uuid)
+    res = traffic.get_trafficObject(resource_uuid)
+    response = jsonify(res['data'])
+    response.status_code = res['status']
+    
+    return response
+
 
 # Delete traffic generation object
 @app.route('/api/trafficgen/v1/trafficObject/<int:resource_uuid>', methods=['DELETE'])
