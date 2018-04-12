@@ -24,8 +24,9 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
-import coloredlogs
 import os
+import coloredlogs
+import logging
 
 from tngsdk.traffic import cli, rest
 from tngsdk.traffic import traffic
@@ -45,12 +46,11 @@ def main():
     else:
         coloredlogs.install(level="INFO")
 
-    # TODO validate if args combination makes any sense
     traffic.start_dbconnection()
-
-    if args.service:
+    
+    if 'service_address' in args and 'service_port' in args:
         # Run in service mode
         rest.serve(args)
     else:
         # Run in CLI mode
-        cli.dispatch()
+        cli.dispatch(args)

@@ -28,80 +28,28 @@ import logging
 import argparse
 import os
 import sys
+import json
+from tngsdk.traffic import traffic
 
 LOG = logging.getLogger(os.path.basename(__file__))
 
 
-def dispatch():
+def dispatch(args):
     # TODO call traffic.py to do selected command
-    return
+    if 'list' in args:
+        res = traffic.list_trafficObjects()['data']
+        print json.dumps(res, indent=4)
+    return  
 
 def parse_args(input_args=None):
     parser = argparse.ArgumentParser(
+        prog="tng-sdk-traffic",
         description="5GTANGO SDK traffic generator",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""Example usage:
-        tng-sdk-traffic --service
+        tng-sdk-traffic service --address 127.0.0.1 --port 8000
         """)
-
-    parser.add_argument(
-        "--generate-object",
-        "-g",
-        help="Generate a traffic generation object",
-        dest="generate-trafficobj",
-        action="store_true",
-        required=False,
-        default={}
-    )
-    parser.add_argument(
-        "--list-flows",
-        "-l",
-        help="Retrieve a list with traffic flows, their status and configurations",
-        dest="list-flows",
-        action="store_true",
-        required=False,
-        default=False
-    )
-    parser.add_argument(
-        "--target-address",
-        help="Target address to send the traffic."
-        + "\nDefault: 0.0.0.0",
-        required=False,
-        default="0.0.0.0",
-        dest="target_address"
-    )
-    parser.add_argument(
-        "--target-port",
-        help="Target port to send the traffic."
-        + "\nDefault: 5099",
-        required=False,
-        default=5099,
-        dest="target_port"
-    )
-    parser.add_argument(
-        "--service",
-        help="Run traffic generator in service mode with REST API.",
-        dest="service",
-        action="store_true",
-        required=False,
-        default=False
-    )
-    parser.add_argument(
-        "--address",
-        help="Listen address of REST API when in service mode."
-        + "\nDefault: 0.0.0.0",
-        required=False,
-        default="0.0.0.0",
-        dest="service_address"
-    )
-    parser.add_argument(
-        "--port",
-        help="TCP port of REST API when in service mode."
-        + "\nDefault: 5099",
-        required=False,
-        default=5099,
-        dest="service_port"
-    )
+    
     parser.add_argument(
         "--verbose",
         help="Sets verbosity level to debug",
@@ -111,7 +59,95 @@ def parse_args(input_args=None):
         default=False
     )
 
+    subparsers = parser.add_subparsers(help='Commands offered by the traffic generation tool')
+
+    # Launch as REST API
+    parser_service = subparsers.add_parser(
+        'service', 
+        help='Launch tng-sdk-traffic in service mode'
+    )
+    parser_service.add_argument(
+        "--address",
+        help="Listen address of REST API when in service mode."
+        + "\nDefault: 127.0.0.1",
+        required=False,
+        default="127.0.0.1",
+        dest="service_address"
+    )
+    parser_service.add_argument(
+        "--port",
+        help="TCP port of REST API when in service mode."
+        + "\nDefault: 8090",
+        required=False,
+        default=8090,
+        dest="service_port"
+    )
+
+
+    # Traffic generation object submenu 
+    parser_traffic = subparsers.add_parser('traffic-object', help='Traffic generation object commands')
+    
+    # subparsers_traffic = parser_traffic.add_subparsers(help='Commands to operate with traffic generation objects')
+
+    parser_traffic.add_argument('--list', help='List all the traffic generation objects', required=False, action="store_true", dest="list" )
+
+    # parser_detail = subparsers_traffic.add_parser('detail', help='Show one traffic generation object details')
+    # parser_detail.add_argument(
+    #     "--uuid",
+    #     help="UUID of the traffic generation object",
+    #     nargs=1,
+    #     required=True
+    # )
+    # parser_remove = subparsers_traffic.add_parser('remove', help='Remove one traffic generation object')
+    # parser_remove.add_argument(
+    #     "--uuid",
+    #     help="UUID of the traffic generation object",
+    #     nargs=1,
+    #     required=True
+    # )
+
+
+    # parser_add = subparsers_traffic.add_parser('add', help='Create one traffic generation object')
+    # parser_add.add_argument(
+    #     "--name",
+    #     help="Name of the traffic generation object",
+    #     nargs=1,
+    #     required=True
+    # )
+    # parser_add.add_argument(
+    #     "--protocol",
+    #     help="Protocol of the traffic generation object",
+    #     nargs=1,
+    #     required=True
+    # )
+    # parser_add.add_argument(
+    #     "--description",
+    #     help="Description of the traffic generation object",
+    #     required=False
+    # )
+    # parser_add.add_argument(
+    #     "--timeout",
+    #     help="Timeout of the traffic generation object",
+    #     required=False
+    # )
+    # parser_add.add_argument(
+    #     "--bandwidth",
+    #     help="Bandwidth of the traffic generation object",
+    #     required=False
+    # )
+
+
+    # Flows submenu 
+    parser_flow = subparsers.add_parser('flow', help='Traffic flow commands')
+    
+    subparsers_flow = parser_flow.add_subparsers(help='Commands to operate with traffic flows')
+    
+    subparsers_flow.add_parser('list', help='List all the traffic flows created')
+    subparsers_flow.add_parser('detail', help='List all the traffic flows created')
+    subparsers_flow.add_parser('add', help='Add one traffic flow')
+    subparsers_flow.add_parser('remove', help='Remove the traffic flow')
+
     if input_args is None:
         input_args = sys.argv[1:]
-
+    
     return parser.parse_args(input_args)
