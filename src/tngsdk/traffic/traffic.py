@@ -28,6 +28,7 @@ import os
 import sys
 import logging
 import datetime
+import simplejson as json
 import sqlite3 as lite
 
 
@@ -39,6 +40,9 @@ def start_dbconnection():
     try:
         global connection
         connection = lite.connect('traffic.db')
+        # Enable column access by name 
+        connection.row_factory = lite.Row
+
         create_dbtables()
 
     except lite.Error, e:
@@ -92,3 +96,18 @@ def save_trafficObject(data):
     except lite.Error, e:
         LOG.error("Error %s:" % e.args[0])
         return { "status": 500, "message": "Unable to store the traffic generation object" }
+
+def list_trafficObjects():
+    try:
+        cur = connection.cursor()           
+        cur.execute("select * from trafficObjects order by creation_date desc;")
+        data = cur.fetchall()
+
+        jsonData = json.loads(json.dumps( [dict(x) for x in data] ))
+
+        return { "status": 200, "data": jsonData }
+
+    except lite.Error, e:
+        LOG.error("Error %s:" % e.args[0])
+        return { "status": 500, "message": "Unable to store the traffic generation object" }
+    

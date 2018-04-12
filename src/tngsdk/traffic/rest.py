@@ -64,8 +64,12 @@ def generate_tgo():
 # Get list of traffic generation objects
 @app.route('/api/trafficgen/v1/trafficObject', methods=['GET'])
 def get_list():
-    # TODO search for a traffic generation object
-    return "This are the traffic generation objects"
+    res = traffic.list_trafficObjects()
+    response = jsonify(res['data'])
+    response.status_code = res['status']
+    
+    return response
+
 
 # Get traffic generation object
 @app.route('/api/trafficgen/v1/trafficObject/<int:resource_uuid>', methods=['GET'])
