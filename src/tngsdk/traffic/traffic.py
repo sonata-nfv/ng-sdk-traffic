@@ -62,6 +62,14 @@ def create_dbtables():
                     timeout text, \
                     bandwidth text);')
 
+        cur.execute('CREATE TABLE IF NOT EXISTS trafficFlows( \
+                    uuid text NOT NULL, \
+                    trafficObject text NOT NULL, \
+                    creation_date text NOT NULL, \
+                    ip text NOT NULL, \
+                    port text NOT NULL, \
+                    status text NOT NULL);')
+
     except lite.Error, e:
         LOG.error("Error %s:" % e.args[0])
         sys.exit(1)
