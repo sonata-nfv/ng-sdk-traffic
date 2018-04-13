@@ -82,6 +82,13 @@ def parse_args(input_args=None):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""Example usage:
         tng-sdk-traffic service --address 127.0.0.1 --port 8000
+        
+        tng-sdk-traffic traffic-object --list
+        tng-sdk-traffic traffic-object --add '{"name": "object1", "protocol": "UDP"}'
+        tng-sdk-traffic traffic-object --detail 805e130b-3e54-11e8-819f-a0c5897a10ac
+        tng-sdk-traffic traffic-object --remove 805e130b-3e54-11e8-819f-a0c5897a10ac
+
+        tng-sdk-traffic flow --start 805e130b-3e54-11e8-819f-a0c5897a10ac
         """)
     
     parser.add_argument(
