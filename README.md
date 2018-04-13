@@ -16,6 +16,42 @@ python setup.py install
 
 ### CLI mode
 
+The CLI interface is designed for developer usage, allowing to quickly generate traffic for 5GTANGO project. The possibilities offered by this tool are displayed below:
+
+* service is used to launch the API REST
+* traffic-object is used to operate with the traffic generation objects. It allows creation, listing, detailed view and removal
+* flow is used to operate with the traffic flows. It allows creation, status retrieval, removal and start/stop the traffic flows
+
+```
+> tng-sdk-traffic
+Please, select one of the offered commands to continue.
+
+usage: tng-sdk-traffic [-h] [--verbose] {service,traffic-object,flow} ...
+
+5GTANGO SDK traffic generator
+
+positional arguments:
+  {service,traffic-object,flow}
+                        Commands offered by the traffic generation tool
+    service             Launch tng-sdk-traffic in service mode
+    traffic-object      Traffic generation object commands
+    flow                Traffic flow commands
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --verbose             Sets verbosity level to debug
+
+Example usage:
+        tng-sdk-traffic service --address 127.0.0.1 --port 8000
+
+        tng-sdk-traffic traffic-object --list
+        tng-sdk-traffic traffic-object --add '{"name": "object1", "protocol": "UDP"}'
+        tng-sdk-traffic traffic-object --detail 805e130b-3e54-11e8-819f-a0c5897a10ac
+        tng-sdk-traffic traffic-object --remove 805e130b-3e54-11e8-819f-a0c5897a10ac
+
+        tng-sdk-traffic flow --start 805e130b-3e54-11e8-819f-a0c5897a10ac
+```
+
 ### Service mode
 
 tng-sdk-traffic exposes a REST API in order to be used by any external application.
@@ -35,7 +71,29 @@ Initial path for the end-points in the current version: `/api/trafficgen/v1`
 
 ### Examples of use
 
-1.  Launch as a service against localhost: `tng-sdk-traffic --service --address 127.0.0.1 --port 8000`
+1.  Launch as a service against localhost:
+
+    `tng-sdk-traffic --service --address 127.0.0.1 --port 8000`
+
+2.  List the traffic objects created:
+
+    `tng-sdk-traffic traffic-object --list`
+
+3.  Add a traffic object to the DB:
+
+    `tng-sdk-traffic traffic-object --add '{"name": "object1", "protocol": "UDP"}'`
+
+4.  View details of a traffic object:
+
+    `tng-sdk-traffic traffic-object --detail 805e130b-3e54-11e8-819f-a0c5897a10ac`
+
+5.  Remove a traffic object:
+
+    `tng-sdk-traffic traffic-object --remove 805e130b-3e54-11e8-819f-a0c5897a10ac`
+
+6.  Start a traffic flow:
+
+    `tng-sdk-traffic flow --start 805e130b-3e54-11e8-819f-a0c5897a10ac`
 
 ## Documentation
 
