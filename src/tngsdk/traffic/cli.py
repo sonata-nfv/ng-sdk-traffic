@@ -39,16 +39,16 @@ def dispatch(args):
         res = traffic.list_trafficObjects()['data']
         print json.dumps(res, indent=4)
 
-    elif 'detail_UUID' in args and args.detail_UUID != None:
-        res = traffic.get_trafficObject(args.detail_UUID[0])['data']
+    elif 'detail' in args and args.detail != None:
+        res = traffic.get_trafficObject(args.detail[0])['data']
         print json.dumps(res, indent=4)
 
-    elif 'remove_UUID' in args and args.remove_UUID != None:
-        res = traffic.delete_trafficObject(args.remove_UUID[0])['data']
+    elif 'remove' in args and args.remove != None:
+        res = traffic.delete_trafficObject(args.remove[0])['data']
         print json.dumps(res, indent=4)
 
-    elif 'trafficObject' in args and args.trafficObject != None:
-        jsonData = json.loads(args.trafficObject[0])
+    elif 'add' in args and args.add != None:
+        jsonData = json.loads(args.add[0])
         
         if "name" in jsonData and "protocol" in jsonData \
         and jsonData['name'] != "" \
@@ -57,8 +57,21 @@ def dispatch(args):
             print json.dumps(res, indent=4)
             
         else: 
-            print "Some of the mandatory attributes are missing or are incorrect. Please try again."
+            print "JSON data is missing or incorrect. Please try again."
+    
+    elif 'flow_status' in args and args.flow_status and args.flow_uuid:
+        print "This will check flow status"
+    
+    elif 'flow_add' in args and args.flow_add:
+        print "This will add a flow"
 
+    elif 'flow_remove' in args and args.flow_remove and args.flow_uuid:
+        print "This will remove a flow"
+
+    elif ('flow_start' in args and args.flow_start) or \
+        ('flow_stop' in args and args.flow_stop) and args.flow_uuid:
+        print "This will start or stop a flow"
+    
     return  
 
 
@@ -112,43 +125,96 @@ def parse_args(input_args=None):
         '--list', 
         help='List all the traffic generation objects', 
         required=False, 
-        action="store_true", 
-        dest="list" 
+        action="store_true",
+        dest="list"
     )
     parser_traffic.add_argument(
         '--detail', 
         help='Show one traffic generation object details from the introduced UUID', 
+        required=False,
         nargs=1,
-        required=False, 
-        dest="detail_UUID" 
+        metavar=('UUID'),
+        dest="detail"
     )
     parser_traffic.add_argument(
         '--remove', 
         help='Remove one traffic generation object from the introduced UUID', 
+        required=False,
         nargs=1,
-        required=False, 
-        dest="remove_UUID" 
+        metavar=('UUID'),
+        dest="remove"
     )
     parser_traffic.add_argument(
         '--add', 
-        help='Create one traffic generation object of the form \'{ "name": "example", "protocol": "UDP/TCP", "description": "", "timeout": [seconds], "bandwidth": [Mbps] }\'. Only name and protocol are mandatory.', 
-        nargs=1,
+        help='Create one traffic generation object of the form \'{ "name": "example", \
+        "protocol": "UDP/TCP", "description": "", "timeout": [seconds], \
+        "bandwidth": [Mbps] }\'. Only name and protocol are mandatory.', 
         required=False,
-        dest="trafficObject" 
+        nargs=1,
+        metavar=('TRAFFIC OBJECT'),
+        dest="add" 
     )
 
 
     # Flows submenu 
     parser_flow = subparsers.add_parser('flow', help='Traffic flow commands')
     
-    subparsers_flow = parser_flow.add_subparsers(help='Commands to operate with traffic flows')
-    
-    subparsers_flow.add_parser('list', help='List all the traffic flows created')
-    subparsers_flow.add_parser('detail', help='List all the traffic flows created')
-    subparsers_flow.add_parser('add', help='Add one traffic flow')
-    subparsers_flow.add_parser('remove', help='Remove the traffic flow')
+    parser_flow.add_argument(
+        '--flow-add', 
+        help='Creates a traffic flow from one traffic generation object UUID', 
+        required=False,
+        action="store_true", 
+    )
+    parser_flow.add_argument(
+        '--flow-start', 
+        help='Starts a traffic flow from its UUID', 
+        required=False,
+        action="store_true", 
+    )
+    parser_flow.add_argument(
+        '--flow-stop', 
+        help='Stops a traffic flow from its UUID', 
+        required=False,
+        action="store_true", 
+    )
+    parser_flow.add_argument(
+        '--flow-status', 
+        help='Retrieves the status of a traffic flow from its UUID', 
+        required=False, 
+        action="store_true"
+    )
+    parser_flow.add_argument(
+        '--flow-remove', 
+        help='Remove one traffic flow from its UUID', 
+        required=False,
+        action="store_true", 
+    )
+    parser_flow.add_argument(
+        '--flow-uuid', 
+        help='UUID of the desired traffic flow', 
+        nargs=1,
+        required=False
+    )
 
     if input_args is None:
         input_args = sys.argv[1:]
-    
+
+    # Check at least one of the main commands were introduced
+    if "-h" not in input_args and "service" not in input_args and \
+        "traffic-object" not in input_args and "flow" not in input_args:
+        if "-h" not in input_args:
+            print "Please, select one of the offered commands to continue.\n"
+            parser.print_help()
+            sys.exit(0)
+
+    # Check at least one traffic-object command were introduced
+    elif "traffic-object" in input_args and len(input_args) == 1:
+        print "Please choose a command from the list below.\n"
+        parser_traffic.print_help()
+
+    # Check at least one traffic-object command were introduced
+    elif "flow" in input_args and len(input_args) == 1:
+        print "Please choose a command from the list below.\n"
+        parser_flow.print_help()
+
     return parser.parse_args(input_args)
