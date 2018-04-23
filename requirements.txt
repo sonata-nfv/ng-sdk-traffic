@@ -3,3 +3,4 @@ pytest
 coloredlogs
 pytest
 simplejson
+flask
