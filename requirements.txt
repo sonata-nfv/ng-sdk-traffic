@@ -1,6 +1,5 @@
 setuptools
 pytest
 coloredlogs
-pytest
 simplejson
 flask
