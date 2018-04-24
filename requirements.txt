@@ -1,5 +1,6 @@
 setuptools
 pytest
 coloredlogs
-pytest
 simplejson
+flask
+flake8

@@ -35,6 +35,7 @@ LOG = logging.getLogger(os.path.basename(__file__))
 
 app = Flask(__name__)
 
+
 # Generate traffic generation object
 @app.route('/api/trafficgen/v1/trafficObject', methods=['POST'])
 def generate_tgo():
@@ -45,20 +46,13 @@ def generate_tgo():
         response.status_code = 400
         return response
 
-    # Check existance of required data params
-    if "protocol" not in body or "name" not in body:
-        response = jsonify("Missing parameters to create traffic generation object")
-        response.status_code = 400
-
-        return response
+    res = traffic.save_trafficObject(body)
+    if (res['status'] == 200):
+        response = jsonify({"resource_uuid": res['uuid']})
     else:
-        res = traffic.save_trafficObject(body)
-        if (res['status'] == 200):
-            response = jsonify({ "resource_uuid": res['uuid'] })
-        else:
-            response = jsonify(res['message'])
-            response.status_code = res['status']
-        return response
+        response = jsonify(res['message'])
+        response.status_code = res['status']
+    return response
 
 
 # Get list of traffic generation objects
@@ -67,7 +61,7 @@ def get_list():
     res = traffic.list_trafficObjects()
     response = jsonify(res['data'])
     response.status_code = res['status']
-    
+
     return response
 
 
@@ -77,12 +71,13 @@ def get_tgo(resource_uuid):
     res = traffic.get_trafficObject(resource_uuid)
     response = jsonify(res['data'])
     response.status_code = res['status']
-    
+
     return response
 
 
 # Delete traffic generation object
-@app.route('/api/trafficgen/v1/trafficObject/<resource_uuid>', methods=['DELETE'])
+@app.route('/api/trafficgen/v1/trafficObject/<resource_uuid>',
+           methods=['DELETE'])
 def delete_tgo(resource_uuid):
     res = traffic.delete_trafficObject(resource_uuid)
     response = jsonify(res['data'])
@@ -95,25 +90,30 @@ def delete_tgo(resource_uuid):
 @app.route('/api/trafficgen/v1/flows/<int:resource_uuid>', methods=['POST'])
 def generate_flow(resource_uuid):
     # TODO create a traffic flow from a traffic generation object
-    return "Creating traffic flow from existing traffic generation object with id " + str(resource_uuid)
+    return "Creating traffic flow from existing traffic generation object \
+            with id " + str(resource_uuid)
 
-# Get traffic flow status 
+
+# Get traffic flow status
 @app.route('/api/trafficgen/v1/flows/<int:flow_uuid>', methods=['GET'])
 def get_status(flow_uuid):
     # TODO get traffic flow status
     return "Getting traffic flow status from id " + str(flow_uuid)
 
+
 # Start/Stops existing traffic flow
 @app.route('/api/trafficgen/v1/flows/<int:flow_uuid>', methods=['PUT'])
 def manage_flow(flow_uuid):
-    # TODO start or stop a traffic flow 
+    # TODO start or stop a traffic flow
     return "Starting/Stopping traffic flow with id " + str(flow_uuid)
+
 
 # Removes traffic flow
 @app.route('/api/trafficgen/v1/flows/<int:flow_uuid>', methods=['DELETE'])
 def remove_flow(flow_uuid):
-    # TODO remove a traffic flow 
+    # TODO remove a traffic flow
     return "Deleting traffic flow with id " + str(flow_uuid)
+
 
 def serve(args):
     app.run(host=args.service_address,
