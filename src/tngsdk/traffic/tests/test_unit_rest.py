@@ -24,34 +24,4 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
-import os
-import coloredlogs
-import logging
-
-from tngsdk.traffic import cli, rest
-from tngsdk.traffic import traffic
-
-
-def logging_setup():
-    os.environ["COLOREDLOGS_LOG_FORMAT"] \
-        = "%(asctime)s [%(levelname)s] [%(name)s] %(message)s"
-
-def main():
-    logging_setup()
-
-    args = cli.parse_args()
-
-    # TODO better log configuration (e.g. file-based logging)
-    if args.verbose:
-        coloredlogs.install(level="DEBUG")
-    else:
-        coloredlogs.install(level="INFO")
-
-    traffic.start_dbconnection("traffic.db")
-
-    if 'service_address' in args and 'service_port' in args:
-        # Run in service mode
-        rest.serve(args)
-    else:
-        # Run in CLI mode
-        cli.dispatch(args)
+import unittest
