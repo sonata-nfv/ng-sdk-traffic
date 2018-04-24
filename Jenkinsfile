@@ -10,6 +10,7 @@ pipeline {
     stage('Unit Tests') {
       steps {
         echo 'Unit Testing..'
+        sh 'docker run -i --rm registry.sonata-nfv.eu:5000/tng-sdk-traffic pytest -v'
       }
     }
     stage('Code Style check') {
