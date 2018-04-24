@@ -26,7 +26,6 @@
 
 import os
 import coloredlogs
-import logging
 
 from tngsdk.traffic import cli, rest
 from tngsdk.traffic import traffic
@@ -35,6 +34,7 @@ from tngsdk.traffic import traffic
 def logging_setup():
     os.environ["COLOREDLOGS_LOG_FORMAT"] \
         = "%(asctime)s [%(levelname)s] [%(name)s] %(message)s"
+
 
 def main():
     logging_setup()

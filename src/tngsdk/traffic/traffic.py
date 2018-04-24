@@ -37,6 +37,7 @@ LOG = logging.getLogger(os.path.basename(__file__))
 
 connection = None
 
+
 def start_dbconnection(db):
     try:
         global connection
@@ -50,10 +51,11 @@ def start_dbconnection(db):
         LOG.error("Error %s:" % e.args[0])
         sys.exit(1)
 
+
 def create_dbtables():
     try:
         cur = connection.cursor()
-        cur.execute('CREATE TABLE IF NOT EXISTS trafficObjects( \
+        cur.execute('CREATE TABLE IF NOT EXISTS trafficObjects(\
                     uuid text NOT NULL, \
                     name text NOT NULL, \
                     creation_date text NOT NULL, \
@@ -62,7 +64,7 @@ def create_dbtables():
                     timeout text, \
                     bandwidth text);')
 
-        cur.execute('CREATE TABLE IF NOT EXISTS trafficFlows( \
+        cur.execute('CREATE TABLE IF NOT EXISTS trafficFlows(\
                     uuid text NOT NULL, \
                     trafficObject text NOT NULL, \
                     creation_date text NOT NULL, \
@@ -74,8 +76,10 @@ def create_dbtables():
         LOG.error("Error %s:" % e.args[0])
         sys.exit(1)
 
+
 def getConnection():
     return connection
+
 
 def save_trafficObject(data):
     creation_date = str(datetime.datetime.now())
@@ -85,11 +89,13 @@ def save_trafficObject(data):
     if "name" in data:
         name = data['name']
     else:
-        return { "status": 400, "message": "Need a name to create the traffic generation object" }
+        return {"status": 400, "message":
+                "Need a name to create the traffic generation object"}
     if "protocol" in data:
         protocol = data['protocol']
     else:
-        return { "status": 400, "message": "Need a protocol to create the traffic generation object" }
+        return {"status": 400, "message":
+                "Need a protocol to create the traffic generation object"}
 
     # Optional parameters
     if "timeout" in data:
@@ -107,56 +113,69 @@ def save_trafficObject(data):
 
     try:
         cur = connection.cursor()
-        cur.execute("insert into trafficObjects VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s');" % \
-                    (id, name, creation_date, protocol, description, timeout, bandwidth))
+        cur.execute("insert into trafficObjects VALUES\
+                    ('%s', '%s', '%s', '%s', '%s', '%s', '%s');" %
+                    (id, name, creation_date, protocol, description,
+                     timeout, bandwidth))
         connection.commit()
 
-        return { "status": 200, "uuid": id }
+        return {"status": 200, "uuid": id}
 
     except lite.Error as e:
         LOG.error("Error %s:" % e.args[0])
-        return { "status": 500, "message": "Unable to store the traffic generation object" }
+        return {"status": 500, "message":
+                "Unable to store the traffic generation object"}
+
 
 def list_trafficObjects():
     try:
         cur = connection.cursor()
-        cur.execute("select * from trafficObjects order by creation_date desc;")
+        cur.execute("select * from trafficObjects \
+        order by creation_date desc;")
         data = cur.fetchall()
 
-        jsonData = json.loads(json.dumps( [dict(x) for x in data] ))
+        jsonData = json.loads(json.dumps([dict(x) for x in data]))
 
-        return { "status": 200, "data": jsonData }
+        return {"status": 200, "data": jsonData}
 
     except lite.Error as e:
         LOG.error("Error %s:" % e.args[0])
-        return { "status": 500, "message": "Unable to get the traffic generation objects" }
+        return {"status": 500, "message":
+                "Unable to get the traffic generation objects"}
+
 
 def get_trafficObject(resource_uuid):
     try:
         cur = connection.cursor()
-        cur.execute("select * from trafficObjects where uuid=:id", {"id": resource_uuid})
+        cur.execute("select * from trafficObjects where uuid=:id",
+                    {"id": resource_uuid})
         data = cur.fetchall()
 
         if data == []:
-            return { "status": 404, "data": "Traffic generation object does not exist" }
+            return {"status": 404, "data":
+                    "Traffic generation object does not exist"}
         else:
-            jsonData = json.loads(json.dumps( [dict(x) for x in data] ))[0]
-            return { "status": 200, "data": jsonData }
+            jsonData = json.loads(json.dumps([dict(x) for x in data]))[0]
+            return {"status": 200, "data": jsonData}
 
     except lite.Error as e:
         LOG.error("Error %s:" % e.args[0])
-        return { "status": 500, "message": "Unable to get the traffic generation object" }
+        return {"status": 500, "message":
+                "Unable to get the traffic generation object"}
+
 
 def delete_trafficObject(resource_uuid):
     try:
         tgo = get_trafficObject(resource_uuid)
 
         cur = connection.cursor()
-        cur.execute("delete from trafficObjects where uuid=:id", {"id": resource_uuid})
+        cur.execute("delete from trafficObjects where uuid=:id",
+                    {"id": resource_uuid})
         connection.commit()
 
-        return { "status": tgo['status'], "data": tgo['data'] }
+        return {"status": tgo['status'], "data": tgo['data']}
 
     except lite.Error as e:
         LOG.error("Error %s:" % e.args[0])
-        return { "status": 500, "message": "Unable to remove the traffic generation object" }
+        return {"status": 500, "message":
+                "Unable to remove the traffic generation object"}

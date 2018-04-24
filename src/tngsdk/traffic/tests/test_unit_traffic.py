@@ -26,7 +26,6 @@
 
 import unittest
 import datetime
-
 from tngsdk.traffic import traffic
 
 
@@ -36,66 +35,65 @@ class TngSdkTrafficTest(unittest.TestCase):
         traffic.start_dbconnection("trafficTesting.db")
         connection = traffic.getConnection()
         cur = connection.cursor()
-        cur.execute("insert into trafficObjects VALUES('805e130b-3e54-11e8-819f-a0c5897a10ac', 'object 1', '%s', 'UDP', 'Description 1', '10000', '1');" % (str(datetime.datetime.now())))
-        cur.execute("insert into trafficObjects VALUES('805edf12-3e54-11e8-819f-b0c5265a10bc', 'object 2', '%s', 'TCP', 'Description 2', '2000', '2');" % (str(datetime.datetime.now())))
-        cur.execute("insert into trafficObjects VALUES('805ff323-3e54-11e8-819f-d0c354a101ah', 'object 3', '%s', 'UDP', 'Description 3', '5000', '1');" % (str(datetime.datetime.now())))
+        cur.execute("insert into trafficObjects VALUES('805e130b-3e54-11e8-819f-a0c5897a10ac', \
+                    'object 1', '%s', 'UDP', 'Description 1', '10000', '1');" %
+                    (str(datetime.datetime.now())))
+        cur.execute("insert into trafficObjects VALUES('805edf12-3e54-11e8-819f-b0c5265a10bc', \
+                    'object 2', '%s', 'TCP', 'Description 2', '2000', '2');" %
+                    (str(datetime.datetime.now())))
+        cur.execute("insert into trafficObjects VALUES('805ff323-3e54-11e8-819f-d0c354a101ah', \
+                    'object 3', '%s', 'UDP', 'Description 3', '5000', '1');" %
+                    (str(datetime.datetime.now())))
         connection.commit()
-
 
     def tearDown(self):
         connection = traffic.getConnection()
         cur = connection.cursor()
         cur.execute("DROP TABLE trafficObjects")
 
-
     def test_traffic_add_correct(self):
         data = {"name": "Test Object", "protocol": "TCP"}
         state = traffic.save_trafficObject(data)
-        self.assertEqual(state['status'],200)
+        self.assertEqual(state['status'], 200)
 
-        connection = traffic.getConnection();
+        connection = traffic.getConnection()
         cur = connection.cursor()
-        cur.execute("SELECT * from trafficObjects where uuid=:id", {"id": state["uuid"]})
+        cur.execute("SELECT * from trafficObjects where uuid=:id",
+                    {"id": state["uuid"]})
         list = cur.fetchone()
 
         for i in data:
             self.assertTrue(data[i] in list)
 
-
     def test_traffic_add_incorrect(self):
         data = {"name": "name1"}
         state = traffic.save_trafficObject(data)
-        self.assertEqual(state['status'],400)
-
+        self.assertEqual(state['status'], 400)
 
     def test_traffic_list(self):
         state = traffic.list_trafficObjects()
-        self.assertEqual(state["status"],200)
-
+        self.assertEqual(state["status"], 200)
 
     def test_traffic_delete_correct(self):
         data = traffic.list_trafficObjects()
         state = traffic.delete_trafficObject(data['data'][1]["uuid"])
-        self.assertEqual(state["status"],200)
-
+        self.assertEqual(state["status"], 200)
 
     def test_traffic_delete_incorrect(self):
         state = traffic.delete_trafficObject("incorrectID")
-        self.assertEqual(state["status"],404)
-
+        self.assertEqual(state["status"], 404)
 
     def test_traffic_detail_correct(self):
-        connection = traffic.getConnection();
+        connection = traffic.getConnection()
         cur = connection.cursor()
         cur.execute("SELECT uuid from trafficObjects")
         data = cur.fetchone()
         state = traffic.get_trafficObject(data[0])
-        self.assertEqual(state['status'],200)
-
+        self.assertEqual(state['status'], 200)
 
     def test_traffic_detail_incorrect(self):
         state = traffic.get_trafficObject("incorrectID")
-        self.assertEqual(state['status'],404)
+        self.assertEqual(state['status'], 404)
 
 
 if __name__ == '__main__':
