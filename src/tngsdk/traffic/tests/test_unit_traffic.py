@@ -84,11 +84,7 @@ class TngSdkTrafficTest(unittest.TestCase):
         self.assertEqual(state["status"], 404)
 
     def test_traffic_detail_correct(self):
-        connection = traffic.getConnection()
-        cur = connection.cursor()
-        cur.execute("SELECT uuid from trafficObjects")
-        data = cur.fetchone()
-        state = traffic.get_trafficObject(data[0])
+        state = traffic.get_trafficObject('805e130b-3e54-11e8-819f-a0c5897a10ac')
         self.assertEqual(state['status'], 200)
 
     def test_traffic_detail_incorrect(self):
