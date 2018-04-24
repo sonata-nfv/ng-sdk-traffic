@@ -37,33 +37,33 @@ LOG = logging.getLogger(os.path.basename(__file__))
 def dispatch(args):
     if 'list' in args and args.list:
         res = traffic.list_trafficObjects()['data']
-        print json.dumps(res, indent=4)
+        print (json.dumps(res, indent=4))
 
     elif 'detail' in args and args.detail != None:
         res = traffic.get_trafficObject(args.detail[0])['data']
-        print json.dumps(res, indent=4)
+        print (json.dumps(res, indent=4))
 
     elif 'remove' in args and args.remove != None:
         res = traffic.delete_trafficObject(args.remove[0])['data']
-        print json.dumps(res, indent=4)
+        print (json.dumps(res, indent=4))
 
     elif 'add' in args and args.add != None:
         jsonData = json.loads(args.add[0])
         res = traffic.save_trafficObject(jsonData)
-        print json.dumps(res, indent=4)
-        
+        print (json.dumps(res, indent=4))
+
     elif 'flow_status' in args and args.flow_status != None:
-        print "This will check flow status"
+        print ("This will check flow status")
 
     elif 'flow_add' in args and args.flow_add != None:
-        print "This will add a flow"
+        print ("This will add a flow")
 
     elif 'flow_remove' in args and args.flow_remove != None:
-        print "This will remove a flow"
+        print ("This will remove a flow")
 
     elif ('flow_start' in args and args.flow_start != None) or \
         ('flow_stop' in args and args.flow_stop != None):
-        print "This will start or stop a flow"
+        print ("This will start or stop a flow")
 
     return
 
@@ -209,18 +209,18 @@ def parse_args(input_args=None):
     if "-h" not in input_args and "service" not in input_args and \
         "traffic-object" not in input_args and "flow" not in input_args:
         if "-h" not in input_args:
-            print "Please, select one of the offered commands to continue.\n"
+            print ("Please, select one of the offered commands to continue.\n")
             parser.print_help()
             sys.exit(0)
 
     # Check at least one traffic-object command were introduced
     elif "traffic-object" in input_args and len(input_args) == 1:
-        print "Please choose a command from the list below.\n"
+        print ("Please choose a command from the list below.\n")
         parser_traffic.print_help()
 
     # Check at least one traffic-object command were introduced
     elif "flow" in input_args and len(input_args) == 1:
-        print "Please choose a command from the list below.\n"
+        print ("Please choose a command from the list below.\n")
         parser_flow.print_help()
 
     return parser.parse_args(input_args)

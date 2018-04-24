@@ -46,7 +46,7 @@ def start_dbconnection(db):
 
         create_dbtables()
 
-    except lite.Error, e:
+    except lite.Error as e:
         LOG.error("Error %s:" % e.args[0])
         sys.exit(1)
 
@@ -70,7 +70,7 @@ def create_dbtables():
                     port text NOT NULL, \
                     status text NOT NULL);')
 
-    except lite.Error, e:
+    except lite.Error as e:
         LOG.error("Error %s:" % e.args[0])
         sys.exit(1)
 
@@ -113,7 +113,7 @@ def save_trafficObject(data):
 
         return { "status": 200, "uuid": id }
 
-    except lite.Error, e:
+    except lite.Error as e:
         LOG.error("Error %s:" % e.args[0])
         return { "status": 500, "message": "Unable to store the traffic generation object" }
 
@@ -127,7 +127,7 @@ def list_trafficObjects():
 
         return { "status": 200, "data": jsonData }
 
-    except lite.Error, e:
+    except lite.Error as e:
         LOG.error("Error %s:" % e.args[0])
         return { "status": 500, "message": "Unable to get the traffic generation objects" }
 
@@ -143,7 +143,7 @@ def get_trafficObject(resource_uuid):
             jsonData = json.loads(json.dumps( [dict(x) for x in data] ))[0]
             return { "status": 200, "data": jsonData }
 
-    except lite.Error, e:
+    except lite.Error as e:
         LOG.error("Error %s:" % e.args[0])
         return { "status": 500, "message": "Unable to get the traffic generation object" }
 
@@ -157,6 +157,6 @@ def delete_trafficObject(resource_uuid):
 
         return { "status": tgo['status'], "data": tgo['data'] }
 
-    except lite.Error, e:
+    except lite.Error as e:
         LOG.error("Error %s:" % e.args[0])
         return { "status": 500, "message": "Unable to remove the traffic generation object" }
