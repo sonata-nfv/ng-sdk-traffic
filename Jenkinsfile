@@ -16,6 +16,7 @@ pipeline {
     stage('Code Style check') {
       steps {
         echo 'Checking code style....'
+        sh 'docker run -i --rm registry.sonata-nfv.eu:5000/tng-sdk-traffic flake8 --exclude .eggs .'
       }
     }
     stage('Container publishing') {

@@ -3,3 +3,4 @@ pytest
 coloredlogs
 simplejson
 flask
+flake8
