@@ -36,36 +36,46 @@ LOG = logging.getLogger(os.path.basename(__file__))
 
 def dispatch(args):
     if 'list' in args and args.list:
-        res = traffic.list_trafficObjects()['data']
-        print(json.dumps(res, indent=4))
+        res = traffic.list_trafficObjects()
+        print(json.dumps(res['data'], indent=4))
+        return res
 
     elif 'detail' in args and args.detail is not None:
-        res = traffic.get_trafficObject(args.detail[0])['data']
-        print(json.dumps(res, indent=4))
+        res = traffic.get_trafficObject(args.detail[0])
+        print(json.dumps(res["data"], indent=4))
+        return res
 
     elif 'remove' in args and args.remove is not None:
-        res = traffic.delete_trafficObject(args.remove[0])['data']
-        print(json.dumps(res, indent=4))
+        res = traffic.delete_trafficObject(args.remove[0])
+        print(json.dumps(res["data"], indent=4))
+        return res
 
     elif 'add' in args and args.add is not None:
         jsonData = json.loads(args.add[0])
         res = traffic.save_trafficObject(jsonData)
         print(json.dumps(res, indent=4))
+        return res
 
     elif 'flow_status' in args and args.flow_status is not None:
         print("This will check flow status")
+        return
 
     elif 'flow_add' in args and args.flow_add is not None:
         print("This will add a flow")
+        return
 
     elif 'flow_remove' in args and args.flow_remove is not None:
         print("This will remove a flow")
+        return
 
     elif ('flow_start' in args and args.flow_start is not None) or \
          ('flow_stop' in args and args.flow_stop is not None):
         print("This will start or stop a flow")
+        return
 
-    return
+    else:
+        print("Unknown command")
+        return "Unknown command"
 
 
 def parse_args(input_args=None):
