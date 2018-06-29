@@ -1,3 +1,7 @@
+[![Build Status](https://jenkins.sonata-nfv.eu/buildStatus/icon?job=tng-sdk-traffic/master)](https://jenkins.sonata-nfv.eu/job/tng-sdk-traffic/master)
+
+<p align="center"><img src="https://github.com/sonata-nfv/tng-sdk-traffic/wiki/images/sonata-5gtango-logo-500px.png" /></p>
+
 # tng-sdk-traffic
 
 The 5GTANGO SDK traffic generation repository is part of the European H2020 project 5GTANGO NFV SDK. This component can be used to generate customized traffic to an specific IP and port. tng-sdk-traffic can be used through the CLI or as a micro-service running inside a docker container.
@@ -10,7 +14,7 @@ python setup.py install
 
 ### Dependencies
 
-* SQLite3
+- SQLite3
 
 ## Usage
 
@@ -18,9 +22,9 @@ python setup.py install
 
 The CLI interface is designed for developer usage, allowing to quickly generate traffic for 5GTANGO project. The possibilities offered by this tool are displayed below:
 
-* service is used to launch the API REST
-* traffic-object is used to operate with the traffic generation objects. It allows creation, listing, detailed view and removal
-* flow is used to operate with the traffic flows. It allows creation, status retrieval, removal and start/stop the traffic flows
+- service is used to launch the API REST
+- traffic-object is used to operate with the traffic generation objects. It allows creation, listing, detailed view and removal
+- flow is used to operate with the traffic flows. It allows creation, status retrieval, removal and start/stop the traffic flows
 
 ```
 > tng-sdk-traffic
@@ -111,10 +115,10 @@ The tng-sdk-traffic is published under Apache 2.0 license. Please see the LICENS
 
 The following lead developers are responsible for this repository and have admin rights. They can, for example, merge pull requests.
 
-* Antón Román Portabales
-* Ana Pol González
+- Antón Román Portabales
+- Ana Pol González
 
 #### Feedback-Chanel
 
-* You may use the mailing list [tango-5g-wp4@lists.atosresearch.eu](mailto:tango-5g-wp4@lists.atosresearch.eu)
-* [GitHub issues](https://github.com/sonata-nfv/tng-sdk-traffic/issues)
+- You may use the mailing list [tango-5g-wp4@lists.atosresearch.eu](mailto:tango-5g-wp4@lists.atosresearch.eu)
+- [GitHub issues](https://github.com/sonata-nfv/tng-sdk-traffic/issues)
